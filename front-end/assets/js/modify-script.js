@@ -1,5 +1,4 @@
 window.onload = function () {
-    console.log("Loaded");
     loadPagination();
     loadFood(1);
 }
@@ -45,39 +44,39 @@ function loadPagination() {
             if (numberOfPages == 2) {
                 $(".paginationBar").append(
                     `
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item first"><a class="page-link active" onclick="navPagination(1)" style="cursor: pointer;">1</a></li>
-                        <li class="page-item second"><a class="page-link" onclick="navPagination(2)" style="cursor: pointer;">2</a></li>
-                    </ul>
-                </nav>
-                `
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item first"><a class="page-link active" onclick="navPagination(1)" style="cursor: pointer;">1</a></li>
+                            <li class="page-item second"><a class="page-link" onclick="navPagination(2)" style="cursor: pointer;">2</a></li>
+                        </ul>
+                    </nav>
+                    `
                 )
             } else if (numberOfPages == 3) {
                 $(".paginationBar").append(
                     `
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item first"><a class="page-link active" onclick="navPagination(1)" style="cursor: pointer;">1</a></li>
-                        <li class="page-item second"><a class="page-link" onclick="navPagination(2)" style="cursor: pointer;">2</a></li>
-                        <li class="page-item third"><a class="page-link" onclick="navPagination(3)" style="cursor: pointer;">3</a></li>
-                    </ul>
-                </nav>
-                `
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item first"><a class="page-link active" onclick="navPagination(1)" style="cursor: pointer;">1</a></li>
+                            <li class="page-item second"><a class="page-link" onclick="navPagination(2)" style="cursor: pointer;">2</a></li>
+                            <li class="page-item third"><a class="page-link" onclick="navPagination(3)" style="cursor: pointer;">3</a></li>
+                        </ul>
+                    </nav>
+                    `
                 )
             } else if (numberOfPages > 3) {
                 $(".paginationBar").append(
                     `
-                <nav aria-label="Page navigation example">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item previous"><a class="page-link text-secondary" onclick="navPagination(0)" style="cursor: default; pointer-events: none;">Previous</a></li>
-                        <li class="page-item first"><a class="page-link active" onclick="navPagination(1)" style="cursor: pointer;">1</a></li>
-                        <li class="page-item second"><a class="page-link" onclick="navPagination(2)" style="cursor: pointer;">2</a></li>
-                        <li class="page-item third"><a class="page-link" onclick="navPagination(3)" style="cursor: pointer;">3</a></li>
-                        <li class="page-item next"><a class="page-link" onclick="navPagination(4)" style="cursor: pointer;">Next</a></li>
-                    </ul>
-                </nav>
-                `
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item previous"><a class="page-link text-secondary" onclick="navPagination(0)" style="cursor: default; pointer-events: none;">Previous</a></li>
+                            <li class="page-item first"><a class="page-link active" onclick="navPagination(1)" style="cursor: pointer;">1</a></li>
+                            <li class="page-item second"><a class="page-link" onclick="navPagination(2)" style="cursor: pointer;">2</a></li>
+                            <li class="page-item third"><a class="page-link" onclick="navPagination(3)" style="cursor: pointer;">3</a></li>
+                            <li class="page-item next"><a class="page-link" onclick="navPagination(4)" style="cursor: pointer;">Next</a></li>
+                        </ul>
+                    </nav>
+                    `
                 )
             }
         })
@@ -208,6 +207,6 @@ function navPagination(num) {
 
 // get row data
 function getRowData(rowData){
-    console.log(rowData.id);
-    
+    $(".modify .modal-title .title").remove();
+    $(".modify .modal-title").append(`<span class="title">Modify ${rowData.id} Food</span>`);
 }

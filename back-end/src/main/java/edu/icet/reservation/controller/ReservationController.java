@@ -1,5 +1,6 @@
 package edu.icet.reservation.controller;
 
+import edu.icet.reservation.model.Category;
 import edu.icet.reservation.model.Food;
 import edu.icet.reservation.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,5 +32,10 @@ public class ReservationController {
     @GetMapping("/get-number-of-pages")
     public int getNumberOfPages(){
         return reservationService.getNumberOfPages();
+    }
+
+    @GetMapping("/get-categories")
+    public List<Category> getCategories(){
+        return reservationService.getCategories();
     }
 }

@@ -1,8 +1,11 @@
 package edu.icet.reservation.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import edu.icet.reservation.entity.CategoryEntity;
 import edu.icet.reservation.entity.FoodEntity;
+import edu.icet.reservation.model.Category;
 import edu.icet.reservation.model.Food;
+import edu.icet.reservation.repository.CategoryRepository;
 import edu.icet.reservation.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,6 +17,9 @@ import java.util.List;
 public class ReservationServiceImpl implements ReservationService {
     @Autowired
     ReservationRepository reservationRepository;
+
+    @Autowired
+    CategoryRepository categoryRepository;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -77,6 +83,18 @@ public class ReservationServiceImpl implements ReservationService {
             numberOfPages = 1;
         }
         return numberOfPages;
+    }
+
+    @Override
+    public List<Category> getCategories() {
+        Iterable<CategoryEntity> allCategory = categoryRepository.findAll();
+        List<Category> categories = new ArrayList<>();
+
+        allCategory.forEach(categoryEntity -> {
+            Category category = objectMapper.convertValue(categoryEntity, Category.class);
+            categories.add(category);
+        });
+        return categories;
     }
 
     private ArrayList<Integer> getFoodPageParameters(Long numberOfEntities, Integer number) {
