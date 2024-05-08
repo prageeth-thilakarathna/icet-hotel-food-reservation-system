@@ -5,6 +5,7 @@ import edu.icet.reservation.entity.CategoryEntity;
 import edu.icet.reservation.entity.FoodEntity;
 import edu.icet.reservation.model.Category;
 import edu.icet.reservation.model.Food;
+import edu.icet.reservation.model.ModifyFood;
 import edu.icet.reservation.repository.CategoryRepository;
 import edu.icet.reservation.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -95,6 +96,11 @@ public class ReservationServiceImpl implements ReservationService {
             categories.add(category);
         });
         return categories;
+    }
+
+    @Override
+    public int modifyFood(ModifyFood modifyFood) {
+        return reservationRepository.updateFood(modifyFood.getId(), modifyFood.getName(), modifyFood.getDescription(), modifyFood.getPrice(), modifyFood.getCategory());
     }
 
     private ArrayList<Integer> getFoodPageParameters(Long numberOfEntities, Integer number) {

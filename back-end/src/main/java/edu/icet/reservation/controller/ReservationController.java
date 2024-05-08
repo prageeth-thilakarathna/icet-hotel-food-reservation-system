@@ -2,6 +2,7 @@ package edu.icet.reservation.controller;
 
 import edu.icet.reservation.model.Category;
 import edu.icet.reservation.model.Food;
+import edu.icet.reservation.model.ModifyFood;
 import edu.icet.reservation.service.ReservationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -37,5 +38,10 @@ public class ReservationController {
     @GetMapping("/get-categories")
     public List<Category> getCategories(){
         return reservationService.getCategories();
+    }
+
+    @PatchMapping("/modify-food")
+    public int modifyFood(@RequestBody ModifyFood modifyFood){
+        return reservationService.modifyFood(modifyFood);
     }
 }

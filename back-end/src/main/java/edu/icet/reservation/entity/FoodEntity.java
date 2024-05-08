@@ -14,7 +14,7 @@ import lombok.Setter;
 @Table(name = "food")
 public class FoodEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
