@@ -24,8 +24,8 @@ function loadFood(num) {
                     <td>${data[i].category}</td>
                     <td>${data[i].available}</td>
                     <td>
-                        <a class="fs-5 me-2" data-bs-toggle="modal" data-bs-target="#modifyModal" onclick="getRowData(this)" style="cursor: pointer;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                        <a href="#" class="fs-5" style="color: red;" data-bs-toggle="modal" data-bs-target="#availabilityModal"><i class="fa fa-trash-o"
+                        <a class="fs-5 me-2" data-bs-toggle="modal" data-bs-target="#modifyModal" onclick="getRowData('modify', this)" style="cursor: pointer;"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
+                        <a class="fs-5" style="color: red;" data-bs-toggle="modal" data-bs-target="#availabilityModal" onclick="getRowData('softDelete', this)" style="cursor: pointer;"><i class="fa fa-trash-o"
                                 aria-hidden="true"></i></a>
                     </td>
                 </tr>
@@ -229,35 +229,49 @@ function navPagination(num) {
 const lastSelectedRow = [];
 
 // get row data
-function getRowData(rowData) {
-    $(".modify .modal-title .title").remove();
-    $(".modify .modal-title").append(`<span class="title">Modify ${rowData.parentNode.parentNode.dataset.id} Food</span>`);
-
+function getRowData(model, rowData) {
     const selectRow = {
         "id": rowData.parentNode.parentNode.dataset.id,
         "name": rowData.parentNode.parentNode.dataset.name,
         "description": rowData.parentNode.parentNode.dataset.description,
         "price": parseFloat(rowData.parentNode.parentNode.dataset.price),
-        "category": rowData.parentNode.parentNode.dataset.category
+        "category": rowData.parentNode.parentNode.dataset.category,
+        "isAvailable": rowData.parentNode.parentNode.dataset.available
     }
 
     lastSelectedRow[0] = selectRow;
 
-    document.getElementById("txt-name").value = rowData.parentNode.parentNode.dataset.name;
-    document.getElementById("txt-description").value = rowData.parentNode.parentNode.dataset.description;
-    document.getElementById("num-price").value = rowData.parentNode.parentNode.dataset.price;
+    if (model == "modify") {
+        $(".modify .modal-title .title").remove();
+        $(".modify .modal-title").append(`<span class="title">Modify ${rowData.parentNode.parentNode.dataset.id} Food</span>`);
 
-    for (let i = 0; i < categoryList.length; i++) {
-        if (categoryList[i].name == rowData.parentNode.parentNode.dataset.category) {
-            document.getElementById("opt-category").selectedIndex = i + 1;
+        document.getElementById("txt-name").value = rowData.parentNode.parentNode.dataset.name;
+        document.getElementById("txt-description").value = rowData.parentNode.parentNode.dataset.description;
+        document.getElementById("num-price").value = rowData.parentNode.parentNode.dataset.price;
+
+        for (let i = 0; i < categoryList.length; i++) {
+            if (categoryList[i].name == rowData.parentNode.parentNode.dataset.category) {
+                document.getElementById("opt-category").selectedIndex = i + 1;
+                return;
+            }
+        }
+    } else {
+        $(".availability .modal-title .title").remove();
+        $(".availability .modal-title").append(`<span class="title">Hide ${rowData.parentNode.parentNode.dataset.id} Food from Guest</span>`);
+
+        if (rowData.parentNode.parentNode.dataset.available == "true") {
+            document.getElementById("opt-available").selectedIndex = 1;
+            return;
+        } else {
+            document.getElementById("opt-available").selectedIndex = 2;
             return;
         }
     }
 }
 
 // modify food
-var btnRegister = document.getElementById("btn-modify");
-btnRegister.addEventListener("click", () => {
+var btnModify = document.getElementById("btn-modify");
+btnModify.addEventListener("click", () => {
     modifyFood();
 });
 
@@ -411,6 +425,8 @@ function displayInputError(errorField) {
         $(".input-price").append(`<span style="color: red;" class="fs-6 errorMessage">Price should be greater than 1.</span>`);
     } else if (errorField == "categoryError") {
         $(".select-category").append(`<span style="color: red;" class="fs-6 errorMessage">Please select a category.</span>`);
+    } else if (errorField == "availabilityError") {
+        $(".select-availability").append(`<span style="color: red;" class="fs-6 errorMessage">Please select a availability.</span>`);
     }
 }
 
@@ -455,23 +471,118 @@ function validateUserChanges(userInputs) {
     }
 }
 
-
-
 // claculate current page
-function calculateCurrentPage(id){
-    if(id<=10){
+function calculateCurrentPage(id) {
+    if (id <= 10) {
         return 1;
-    } else if(id>10){
-        var floatValue = (id/10).toFixed(1);
+    } else if (id > 10) {
+        var floatValue = (id / 10).toFixed(1);
         const values = floatValue.split(".");
-        
+
         let firstValue = parseInt(values[0]);
         let secondValue = parseInt(values[1]);
 
-        if(secondValue==0){
+        if (secondValue == 0) {
             return firstValue;
         } else {
-            return firstValue+1;
+            return firstValue + 1;
         }
-    } 
+    }
+}
+
+// change availability
+var btnAvailability = document.getElementById("btn-availability");
+btnAvailability.addEventListener("click", () => {
+    changeAvailability();
+});
+
+const availabilityModal = document.getElementById("availabilityModal");
+
+function changeAvailability() {
+    document.getElementById("opt-available").disabled = true;
+    $(".btn-change-availability").append(`<span class="ms-2 spinner"><i class="fa fa-spinner fa-pulse fa-1x fa-fw"></i></span>`);
+    var optAvailable = document.getElementById("opt-available").value;
+
+    var selectValue;
+    optAvailable == "y" ? selectValue = "true" : selectValue = "false";
+
+    if (optAvailable == "0") {
+        document.getElementById("opt-available").disabled = false;
+        $(".btn-change-availability .spinner").remove();
+        $(".select-availability .errorMessage").remove();
+        displayInputError("availabilityError");
+        return;
+    } else if (lastSelectedRow[0].isAvailable == selectValue) {
+        document.getElementById("opt-available").disabled = false;
+        $(".btn-change-availability .spinner").remove();
+        $(".toast-container .toast-header .toast-img").remove();
+        $(".toast-container .toast-header .toast-title").remove();
+        $(".toast-container .toast-header .btn-close").remove();
+        $(".toast-container .toast-body .message").remove();
+        $(".toast-container .toast-header").append(
+            `
+            <img src="../img/error-icon.png" class="rounded me-2 toast-img" style="width: 20px;">
+            <strong class="me-auto toast-title">Error</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            `
+        );
+        $(".toast-container .toast-body").append(`<span class="message">Failed! You cannot change the previous value back. Please change the value.</span>`);
+        const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLive);
+        toastBootstrap.show();
+        return;
+    } else {
+        $(".select-availability .errorMessage").remove();
+    }
+
+    fetch(`http://localhost:8080/modify-availability/${lastSelectedRow[0].id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(selectValue == "true" ? true : false)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data == 1) {
+                $(".tableRow").remove();
+                loadFood(calculateCurrentPage(lastSelectedRow[0].id));
+                document.getElementById("opt-available").selectedIndex = 0;
+                document.getElementById("opt-available").disabled = false;
+                $(".btn-change-availability .spinner").remove();
+                $(".toast-container .toast-header .toast-img").remove();
+                $(".toast-container .toast-header .toast-title").remove();
+                $(".toast-container .toast-header .btn-close").remove();
+                $(".toast-container .toast-body .message").remove();
+                $(".toast-container .toast-header").append(
+                    `
+                <img src="../img/success-icon.png" class="rounded me-2 toast-img" style="width: 20px;">
+                <strong class="me-auto toast-title">Success</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                `
+                );
+                $(".toast-container .toast-body").append(`<span class="message">Food Availability Change is Successful.</span>`);
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLive);
+                toastBootstrap.show();
+                bootstrap.Modal.getInstance(availabilityModal).hide();
+            } else {
+                document.getElementById("opt-available").disabled = false;
+                $(".btn-change-availability .spinner").remove();
+                $(".toast-container .toast-header .toast-img").remove();
+                $(".toast-container .toast-header .toast-title").remove();
+                $(".toast-container .toast-header .btn-close").remove();
+                $(".toast-container .toast-body .message").remove();
+                $(".toast-container .toast-header").append(
+                    `
+                <img src="../img/error-icon.png" class="rounded me-2 toast-img" style="width: 20px;">
+                <strong class="me-auto toast-title">Error</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                `
+                );
+                $(".toast-container .toast-body").append(`<span class="message">Failed! Have an Error in food availability change.</span>`);
+                const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLive);
+                toastBootstrap.show();
+            }
+        })
+
+
 }

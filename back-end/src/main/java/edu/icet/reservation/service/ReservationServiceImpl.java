@@ -103,6 +103,11 @@ public class ReservationServiceImpl implements ReservationService {
         return reservationRepository.updateFood(modifyFood.getId(), modifyFood.getName(), modifyFood.getDescription(), modifyFood.getPrice(), modifyFood.getCategory());
     }
 
+    @Override
+    public int modifyAvailability(Integer id, boolean availability) {
+        return reservationRepository.updateAvailability(id, availability);
+    }
+
     private ArrayList<Integer> getFoodPageParameters(Long numberOfEntities, Integer number) {
         ArrayList<Integer> parameters = new ArrayList<>();
         int pageMax = number * 10;

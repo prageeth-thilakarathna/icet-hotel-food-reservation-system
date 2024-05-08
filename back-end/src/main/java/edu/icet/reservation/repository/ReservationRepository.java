@@ -14,4 +14,9 @@ public interface ReservationRepository extends CrudRepository<FoodEntity, Intege
     @Modifying
     @Query("UPDATE FoodEntity SET name = :name, description = :description, price = :price, category = :category WHERE id = :id")
     int updateFood(@Param("id") Integer id, @Param("name") String name, @Param("description") String description, @Param("price") double price, @Param("category") String category);
+
+    @Transactional
+    @Modifying
+    @Query(value = "UPDATE food SET is_available = :availability WHERE id = :id", nativeQuery = true)
+    int updateAvailability(@Param("id") Integer id, @Param("availability") boolean availability);
 }

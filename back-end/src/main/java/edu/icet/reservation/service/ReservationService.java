@@ -18,4 +18,6 @@ public interface ReservationService {
     List<Category> getCategories();
 
     int modifyFood(ModifyFood modifyFood);
+
+    int modifyAvailability(Integer id, boolean availability);
 }

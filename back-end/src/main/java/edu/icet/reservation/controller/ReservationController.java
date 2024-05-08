@@ -44,4 +44,9 @@ public class ReservationController {
     public int modifyFood(@RequestBody ModifyFood modifyFood){
         return reservationService.modifyFood(modifyFood);
     }
+
+    @PatchMapping("/modify-availability/{id}")
+    public int modifyAvailability(@PathVariable Integer id, @RequestBody boolean availability){
+        return reservationService.modifyAvailability(id, availability);
+    }
 }
